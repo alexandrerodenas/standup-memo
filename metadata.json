@@ -1,0 +1,5 @@
+{
+  "name": "Standup Memo",
+  "description": "A focused note-taking app designed for standup meetings, allowing you to track daily progress and look back at a custom sliding window of previous days' work.",
+  "requestFramePermissions": []
+}
