@@ -1,6 +1,17 @@
 
 export const getTodayKey = (): string => {
-  return new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const formatDateKey = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 /**
@@ -58,7 +69,7 @@ const isBusinessDay = (date: Date): boolean => {
   const day = date.getDay(); // 0 = Sun, 6 = Sat
   if (day === 0 || day === 6) return false;
 
-  const dateStr = date.toISOString().split('T')[0];
+  const dateStr = formatDateKey(date);
   const holidays = getFrenchHolidays(date.getFullYear());
   if (holidays.includes(dateStr)) return false;
 
@@ -76,7 +87,7 @@ export const getPreviousDays = (count: number): string[] => {
     checkedDate.setDate(checkedDate.getDate() - 1);
     const d = new Date(checkedDate);
     if (isBusinessDay(d)) {
-      dates.push(d.toISOString().split('T')[0]);
+      dates.push(formatDateKey(d));
     }
     
     // Safety break to prevent infinite loop if somehow count is huge

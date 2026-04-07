@@ -49,19 +49,25 @@ const App: React.FC = () => {
     }
 
     const today = getTodayKey();
-    const lastBusinessDay = getPreviousDays(1)[0];
 
     // Logique de report : si aujourd'hui est vide, on récupère les tâches de la dernière fois
     if (!currentNotes[today]) {
-      const lastData = currentNotes[lastBusinessDay];
+      // Trouver la date la plus récente avant aujourd'hui qui contient des données
+      const sortedDates = Object.keys(currentNotes).sort().reverse();
+      const lastDateWithData = sortedDates.find(d => d < today);
+      
       const rolledTodos: Todo[] = [];
       
-      if (lastData && lastData.todos) {
-        lastData.todos.forEach(t => {
-          if (!t.completed) {
-            rolledTodos.push({ ...t, id: `rolled-${Date.now()}-${t.id}` });
-          }
-        });
+      if (lastDateWithData) {
+        const lastData = currentNotes[lastDateWithData];
+        if (lastData && lastData.todos) {
+          lastData.todos.forEach(t => {
+            if (!t.completed) {
+              // On reporte la tâche en gardant ses propriétés mais avec un nouvel ID pour éviter les conflits
+              rolledTodos.push({ ...t, id: `rolled-${Date.now()}-${t.id}` });
+            }
+          });
+        }
       }
 
       currentNotes[today] = {
